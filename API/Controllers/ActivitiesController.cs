@@ -28,12 +28,30 @@ namespace API.Controllers
             return activities;
         }
         
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetById")]
         public async Task<ActionResult<Activity>> GetById(Guid id)
         {
             var activity = await _context.Activities.FirstOrDefaultAsync(a => a.Id == id);
             if(activity == null) return NotFound("Activity Not Found!");
+            return CreatedAtRoute("GetById", new {id = activity.Id}, activity);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Activity>> CreateActivity(Activity activity)
+        {
+            if(activity == null) return BadRequest("Activity is null!");
+            _context.Activities.Add(activity);
+            await _context.SaveChangesAsync();
             return Ok(activity);
         }
+
+        // [HttpPut("{id}")]
+        // public async Task<ActionResult<Activity>> UpdateActivity(Guid id, Activity activity)
+        // {
+        //     if(activity == null) return BadRequest("Activity is null!");
+        //     var activityToUpdate = await _context.Activities.FirstOrDefaultAsync(a => a.Id == id);
+        //     if(activityToUpdate == null) return NotFound("Activity Not Found!");
+            
+        // }
     }
 }

@@ -10,7 +10,6 @@ namespace Domain
         [Required]
         [MaxLength(60)]
         public string Title { get; set; }
-        [MinLength(50)]
         public string Description { get; set; }
         [Required]
         public DateTime Date { get; set; }

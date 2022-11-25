@@ -16,7 +16,7 @@ const sleep = (delay: number) => {
 // Making fake delay to simulate real world
 axios.interceptors.response.use(async response => {
     try {
-        await sleep(1500);
+        await sleep(1000);
         return response;
     } catch (error) {
         console.log(error);

@@ -1,15 +1,12 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import { useStore } from "../../../app/stores/store";
+import { observer } from 'mobx-react-lite';
 
-interface Props {
-    closeForm: () => void
-    activity: Activity | undefined
-    createOrEdit: (activity: Activity) => void
-    submitting: boolean
-}
+export default observer(function ActivityForm() {
 
-export default function ActivityForm({closeForm, activity: selectedActivity, createOrEdit, submitting}: Props) {
+    const {activityStore} = useStore();
+    const {selectedActivity, closeForm, createActivity, updateActivity, loading} = activityStore;
 
     const initialFormState = selectedActivity ?? {
         id: '',
@@ -24,8 +21,7 @@ export default function ActivityForm({closeForm, activity: selectedActivity, cre
     const [activity, setActivity] = useState(initialFormState);
 
     function handleSubmit() {
-        console.log(activity);
-        createOrEdit(activity);
+        activity.id ? updateActivity(activity) : createActivity(activity);
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement| HTMLTextAreaElement>) {
@@ -42,9 +38,9 @@ export default function ActivityForm({closeForm, activity: selectedActivity, cre
                 <Form.Input type="date" placeholder='Date' name="date" value={activity.date} onChange={handleInputChange}/>
                 <Form.Input placeholder='City' name="city" value={activity.city} onChange={handleInputChange}/>
                 <Form.Input placeholder='Venue' name="venue" value={activity.venue} onChange={handleInputChange}/>
-                <Button content='Submit' floated='right' positive type='submit' loading={submitting} />
+                <Button content='Submit' floated='right' positive type='submit' loading={loading} />
                 <Button content='Cancel' floated='right' type='button' onClick={closeForm} />
             </Form>
         </Segment>
     )
-} 
+})

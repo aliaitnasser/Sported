@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 export default observer(function ActivityForm() {
     const history = useHistory();
     const {activityStore} = useStore();
-    const { createActivity, updateActivity, loading, loadActivity, loadingInitial} = activityStore;
+    const { createActivity, updateActivity, loading, loadActivity} = activityStore;
     const{id} = useParams<{id: string}>()
 
     

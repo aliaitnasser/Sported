@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import { Activity } from '../models/activity';
 import { history } from '../../features/home/history';
 import { store } from '../stores/store';
-import { idText } from 'typescript';
 
 // set the base url for the api
 axios.defaults.baseURL = 'https://localhost:5001/api';

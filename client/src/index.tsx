@@ -1,5 +1,6 @@
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router } from 'react-router-dom';
 import App from './app/layout/App';
 import 'react-calendar/dist/Calendar.css';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -7,17 +8,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './app/layout/styles.css';
 import { store, StoreContext } from './app/stores/store';
 import reportWebVitals from './reportWebVitals';
+import { createBrowserHistory } from 'history';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+export const history = createBrowserHistory();
   
-root.render(
+ReactDOM.render(
   <StoreContext.Provider value={store}>
-    <BrowserRouter>
+    <Router history={history}>
       <App />
-    </BrowserRouter>
-  </StoreContext.Provider>
+    </Router>
+  </StoreContext.Provider>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { Activity } from '../models/activity';
-import { history } from '../../features/home/history';
 import { store } from '../stores/store';
+import { User, UserFormValues } from '../models/user';
+import { history } from '../..';
 
 // set the base url for the api
 axios.defaults.baseURL = 'https://localhost:5001/api';
@@ -29,7 +30,6 @@ axios.interceptors.response.use(async response => {
             }
             if(config.method === 'get' && data.errors.hasOwnProperty('id')){
                 history.push('/notfound');
-                window.location.reload();
             }
             if(data.errors){
                 const modalStateErrors = [];
@@ -46,34 +46,39 @@ axios.interceptors.response.use(async response => {
             break;
         case 404:
             history.push('/notfound');
-            window.location.reload();
             break;
         case 500:
             store.commonStore.setServerError(data);
             history.push('/server-error');
-            window.location.reload();
             break;
     }
     return Promise.reject(error);
 })
 
 const requests = {
-    get: <T> (url: string) => axios.get<T>(url).then(responseBody),
-    post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
-    put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
-    del: <T> (url: string) => axios.delete<T>(url).then(responseBody)
+    get  : <T> (url: string) => axios.get<T>(url).then(responseBody),
+    post : <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
+    put  : <T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+    del  : <T> (url: string) => axios.delete<T>(url).then(responseBody)
 }
 
 const Activities = {
-    list: () => requests.get<Activity[]>('/activities'),
+    list   : () => requests.get<Activity[]>('/activities'),
     details: (id: string) => requests.get<Activity>(`/activities/${id}`),
-    create: (activity: Activity) => requests.post<void>('/activities', activity),
-    update: (activity: Activity) => requests.put<void>(`/activities/${activity.id}`, activity),
-    delete: (id: string) => requests.del<void>(`/activities/${id}`)
+    create : (activity: Activity) => requests.post<void>('/activities', activity),
+    update : (activity: Activity) => requests.put<void>(`/activities/${activity.id}`, activity),
+    delete : (id: string) => requests.del<void>(`/activities/${id}`)
+}
+
+const Account = {
+    current : () => requests.get<User>('/account'),
+    login   : (user: UserFormValues) => requests.post<User>('/account/login', user),
+    register: (user: UserFormValues) => requests.post<User>('/account/register', user)
 }
 
 const agent = {
-    Activities
+    Activities,
+    Account
 }
 
 export default agent;

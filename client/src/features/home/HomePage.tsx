@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 
 export default observer(function HomePage(){
 
-    const {userStore} = useStore();
+    const {userStore : {isLoggedIn}} = useStore();
 
     return(
         <Segment inverted textAlign="center" vertical className="masthead">
@@ -14,7 +14,7 @@ export default observer(function HomePage(){
                     <Image size='massive' src="/assets/logo.png" alt='Logo' style={{marginBottom:12}} />
                     Sported
                 </Header>
-                {userStore.isLoggedIn ? (
+                {isLoggedIn ? (
                     <>
                         <Header as='h2' inverted content='Welcome to Sported!' />
                         <Button as={Link} to='/activities' size='huge' inverted>
@@ -22,9 +22,14 @@ export default observer(function HomePage(){
                         </Button>
                     </>
                 ) : (
-                    <Button as={Link} to='/login' size='huge' inverted>
-                        Login
-                    </Button>
+                    <>
+                        <Button as={Link} to='/login' size='huge' inverted>
+                            Login
+                        </Button>
+                        <Button as={Link} to='/register' size="huge" inverted>
+                            Register
+                        </Button>
+                    </>
                 )}
 
             </Container>

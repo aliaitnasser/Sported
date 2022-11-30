@@ -5,19 +5,19 @@ import { store } from '../stores/store';
 import { User, UserFormValues } from '../models/user';
 import { history } from '../..';
 
-// set the base url for the api
+//* Set the base url for the api
 axios.defaults.baseURL = 'https://localhost:5001/api';
 
 const responseBody = <T> (response: AxiosResponse<T>) => response.data;
 
-// sleep function to simulate delay
+//* Sleep function to simulate delay
 const sleep = (delay: number) => {
     return new Promise((resolve) => {
         setTimeout(resolve, delay);
     })
 }
 
-// Making fake delay to simulate real world
+//* Making fake delay to simulate real world
 axios.interceptors.response.use(async response => {
     await sleep(1000);
     return response;
@@ -25,12 +25,15 @@ axios.interceptors.response.use(async response => {
   const {data, status, config} = error.response!;
     switch (status) {
         case 400:
+            //* Checking if the error data is a string and return it on a toast error
             if(typeof data === 'string') {
                 toast.error(data);
             }
+            //* Checking the method request, if it's a get with an Id parameter
             if(config.method === 'get' && data.errors.hasOwnProperty('id')){
                 history.push('/notfound');
             }
+
             if(data.errors){
                 const modalStateErrors = [];
                 for (const key in data.errors) {
@@ -62,6 +65,7 @@ const requests = {
     del  : <T> (url: string) => axios.delete<T>(url).then(responseBody)
 }
 
+//* Activity Requests
 const Activities = {
     list   : () => requests.get<Activity[]>('/activities'),
     details: (id: string) => requests.get<Activity>(`/activities/${id}`),
@@ -70,6 +74,7 @@ const Activities = {
     delete : (id: string) => requests.del<void>(`/activities/${id}`)
 }
 
+//* Account Requests
 const Account = {
     current : () => requests.get<User>('/account'),
     login   : (user: UserFormValues) => requests.post<User>('/account/login', user),

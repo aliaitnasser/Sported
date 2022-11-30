@@ -19,6 +19,7 @@ export default observer(function NavBar() {
                 <Menu.Item>
                     <Button as={NavLink} to='/createActivity' positive content="Create Activity"/>
                 </Menu.Item>
+                {/* Checking if the user is logged in */}
                 {isLoggedIn && 
                     <Menu.Item position="right">
                         <Image src={user?.image || 'assets/user.png'} avatar spaced='right'/>

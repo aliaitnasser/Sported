@@ -17,6 +17,13 @@ const sleep = (delay: number) => {
     })
 }
 
+//* Handle the requests
+axios.interceptors.request.use(config => {
+    const token = store.commonStore.token;
+    if (token) config.headers!.Authorization = `Bearer ${token}`;
+    return config;
+})
+
 //* Making fake delay to simulate real world
 axios.interceptors.response.use(async response => {
     await sleep(1000);

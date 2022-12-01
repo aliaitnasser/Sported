@@ -25,6 +25,19 @@ export default class UserStore {
             runInAction(() => this.user = user);
             history.push('/activities');
             console.log(user);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //* Handle Register
+    Register = async (creds: UserFormValues) => {
+        try {
+            const user = await agent.Account.register(creds)
+            history.push('/activities')
+            console.log(user)
+            store.modalStore.closeModal();
         } catch (error) {
             throw error;
         }
@@ -39,14 +52,13 @@ export default class UserStore {
         window.location.reload();
     }
 
-    //* Handle Register
-    Register = async (creds: UserFormValues) => {
+
+    getUser = async () => {
         try {
-            const user = await agent.Account.register(creds)
-            history.push('/login')
-            console.log(user)
+            const user = await agent.Account.current();
+            runInAction(() => this.user = user);
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
 }

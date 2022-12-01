@@ -1,35 +1,45 @@
 import { ErrorMessage, Form, Formik } from "formik";
-import { Button, ButtonGroup, Label } from "semantic-ui-react";
+import { Button, ButtonGroup, Header } from "semantic-ui-react";
 import MyTextInput from "../../app/common/form/MyTextInput";
 import { observer } from 'mobx-react-lite';
 import { useStore } from "../../app/stores/store";
 import React from "react";
-import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import ValidationErrors from '../Errors/ValidationErrors';
+
+
 
 export default observer(function RegisterForm()
 {
-    const {userStore} = useStore();
+    const {userStore, modalStore} = useStore();
 
     return(
         <Formik
             initialValues={{ email: "", password: "", username:"", displayName:"", error: null }}
             onSubmit={(values, {setErrors}) => userStore.Register(values).catch(error => 
-                setErrors({error: 'Invalid input'}))}
+                setErrors({error}))}
+            validationSchema={Yup.object({
+                email: Yup.string().required().email(),
+                password: Yup.string().required(),
+                username: Yup.string().required(),
+                displayName: Yup.string().required()
+            })}
         >
-            {({handleSubmit, isSubmitting, errors}) => (
+            {({handleSubmit, isSubmitting, errors, isValid, dirty}) => (
 
-                <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
+                <Form className="ui form error" onSubmit={handleSubmit} autoComplete="off">
+                    <Header as='h2' content='Sign uo to Sported' color="teal" textAlign="center" />
                     <MyTextInput name="email" placeholder="Email" type="email" />
                     <MyTextInput name="username" placeholder="Username" />
                     <MyTextInput name="password" placeholder="Password" type="password" />
                     <MyTextInput name="displayName" placeholder="Display Name" />
                     <ErrorMessage 
                         name="error" render={() => 
-                        <Label color="red" style={{marginBottom: 10}} basic content={errors.error} />} 
+                        <ValidationErrors errors={errors.error} />} 
                     />
-                    <ButtonGroup>
-                        <Button loading={isSubmitting} positive fluid content="Register" type="submit" />
-                        <Button fluid content="Cancel" as={Link} to='/' />
+                    <ButtonGroup size="small">
+                        <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive fluid content="Register" type="submit" />
+                        <Button fluid content="Cancel" onClick={() => modalStore.closeModal()} />
                     </ButtonGroup>
                 </Form>
             )}

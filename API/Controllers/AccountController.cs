@@ -68,11 +68,17 @@ namespace API.Controllers
         {
             //* Check if the email is already in use
             if(await _userManager.FindByEmailAsync(registerDTO.Email) != null)
-                return BadRequest("Email taken");
+            {
+                ModelState.AddModelError("email", "Email is already in use");
+                return ValidationProblem();
+            }
             
             //* Check if the username is already in use
             if(await _userManager.FindByNameAsync(registerDTO.Username) != null)
-                return BadRequest("Username taken");
+            {
+                ModelState.AddModelError("username", "Username is already in use");
+                return ValidationProblem();
+            }
             
             //* Create a new user
             var user = new AppUser
